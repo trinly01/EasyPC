@@ -9,10 +9,11 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 | Trigger | `event` → `items.create` on `easypc_work_orders` |
 | ID | `44615a57-1342-406e-947e-653e964809f8` |
 
-`count` (item-read: count WOs) → `format` (exec: build `WO-YYYY-NNNN` + random `tracking_token`) → `setnum` (item-update: writes both fields, `emitEvents: false`).
+`count` (item-read: count WOs) → `format` (exec: build `WO-YYYY-NNNN` + random `tracking_token`) → `getset` (likha_sql: read `easypc_settings`) → `pick` (exec: flatten `getset.rows[0]`) → `setnum` (item-update: writes all fields, `emitEvents: false`).
 
 - `work_order_number` — `WO-2026-0001` style, count-based sequence
 - `tracking_token` — 16-char random alnum, hidden readonly field; still accepted as a lookup key for the public tracker (backward compat for already-printed forms/links)
+- `terms_version` / `terms_snapshot` / `waiver_snapshot` — legal text frozen onto the WO at intake from `easypc_settings`; printed forms always show what the customer actually agreed to, even if settings change later
 
 ## `easypc_video_link` — Jitsi proof-of-work link
 

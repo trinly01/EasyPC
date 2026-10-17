@@ -40,6 +40,10 @@
 
   /* ---- misc ---- */
   .muted { color: #777; }
+  .legal { margin-top: 6px; font-size: 8.5px; color: #444; line-height: 1.45; }
+  .legal ol, .legal ul { margin: 2px 0 2px 16px; padding: 0; }
+  .legal li { margin-bottom: 1px; }
+  .legal p { margin: 2px 0; }
   .right { text-align: right; }
   .green { color: #0a8a3c; font-weight: 700; }
   .badge { display: inline-block; border: 1px solid #00c853; color: #0a8a3c; border-radius: 10px;
@@ -224,9 +228,17 @@
   <div class="sec-b">
     <div class="kv">
       <div class="row"><div class="k">Terms Accepted</div><div class="v">{% if terms_accepted %}<span class="green">YES</span>{% else %}NO{% endif %}{% if terms_accepted_at %} — {{ terms_accepted_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
-      {% if terms_version %}<div class="row"><div class="k">Terms Version</div><div class="v">{{ terms_version }}</div></div>{% endif %}
+      {% if terms_version %}<div class="row"><div class="k">Terms Version</div><div class="v green">{{ terms_version }}</div></div>{% endif %}
     </div>
+    {% if terms_snapshot %}
+    <div class="legal">{{ terms_snapshot }}</div>
+    {% endif %}
+    {% if waiver_snapshot %}
+    <div class="legal">{{ waiver_snapshot }}</div>
+    {% endif %}
+    {% unless terms_snapshot or waiver_snapshot %}
     <p class="muted" style="margin:4px 0 0">The customer acknowledges the EasyPC Terms &amp; Conditions and Liability Waiver as printed on the original service form.</p>
+    {% endunless %}
   </div>
 </div>
 
