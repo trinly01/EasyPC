@@ -49,7 +49,7 @@ Notifiable statuses (verified against live op code): `awaiting_approval`, `ready
 
 `check` (exec: `notify_customer` flag set?) → `readupd` (item-read: update + WO + customer) → `buildmail` (exec: subject/body) → `gate` → `sendmail` (mail op) → `stampsent` (item-update: `notification_sent_at`, `emitEvents: false`).
 
-> Requires `EMAIL_*` env vars on the Directus host; until configured the update rows still log and appear on the tracker.
+> ✅ Verified live (Oct 17) — server uses `EMAIL_TRANSPORT=smtp` via GoDaddy Titan (`smtpout.secureserver.net:465`, SSL). Note: the `mail` op logs errors but doesn't halt the chain — `notification_sent_at` stamps even if the send fails, so treat it as "attempted" not "delivered".
 
 ## `easypc_warranty_stamp` — release + warranty stamping
 
