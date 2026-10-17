@@ -170,17 +170,25 @@ The work-order form is long, so the detail page is organized as **tabs**. `work_
 
 Requires Directus **≥ 11.17.1** (native `group-tabs`). On older versions: install `directus-extension-group-tabs-interface`, or fall back to `group-accordion` with the same groups.
 
-| Tab (child group of `grp_tabs`) | Interface | Fields inside, in order |
+| Tab (child group of `grp_tabs`) | Label | Fields inside, in order |
 |---------------------|-----------|--------------------------|
-| `grp_intake` | `group-raw` | `job_order_no`, `odoo_ticket`, `store`, `date_time_in`, `intake_path`, `customer`, `received_by`, `warranty_claim_of`, `tracking_token`, `video_call_link`, `print` |
-| `grp_unit` | `group-raw` | `unit_type`, `unit_brand_model`, `password_handling`, `customer_concern`, `services`, `terms_accepted`, `terms_accepted_at`, `terms_version` |
-| `grp_parts` | `group-raw` | `cpu_socket_pins_photographed`, `photo_count`, `parts` (O2M list), `files` |
-| `grp_assessment` | `group-raw` | `diagnostics` (O2M list), `diagnosis_findings`, `recommended_solution`, `additional_findings`, `assessed_by`, `assessed_at`, `approvals` (O2M list) |
-| `grp_work` | `group-raw` | `processes` (O2M list), `parts_used` (O2M list) |
-| `grp_releasing` | `group-raw` | `test_result`, `test_remarks`, `so_number`, `amount`, `old_parts_disposition`, `released_by`, `released_at`, `receiver_name`, `receiver_id`, `service_warranty_until` |
-| `grp_updates` | `group-raw` | `updates` (O2M list with `notify_customer` toggle) |
+| `grp_intake` | Intake | `job_order_no`, `odoo_ticket`, `store`, `date_time_in`, `intake_path`, `customer`, `received_by`, `warranty_claim_of`, `terms_accepted`, `terms_accepted_at`, `terms_version`, `print` |
+| `grp_unit` | Unit & Services | `unit_type`, `unit_brand_model`, `password_handling`, `customer_concern`, `services` (M2M) |
+| `grp_parts` | Parts & Photos | `cpu_socket_pins_photographed`, `photo_count`, `parts` (O2M), `files` (M2M) |
+| `grp_assessment` | Assessment & Approvals | `diagnostics` (O2M), `diagnosis_findings`, `recommended_solution`, `assessed_by`, `assessed_at`, `approvals` (O2M) |
+| `grp_work` | Repair | `processes` (O2M), `parts_used` (O2M) |
+| `grp_testing` | Testing | `test_result`, `test_remarks`, `additional_findings` |
+| `grp_releasing` | Release | `so_number`, `amount`, `old_parts_disposition`, `released_by`, `released_at`, `receiver_name`, `receiver_id`, `service_warranty_until`, `warranty_claims` (O2M) |
+| `grp_updates` | Updates & Notifications | `updates` (O2M with `notify_customer` toggle), `video_call_link` |
 
-Tab order follows the service journey left→right: Intake → Unit → Parts → Assessment → Work → Releasing → Updates. Role permissions can hide tabs a role shouldn't touch (e.g. Releasing read-only for technicians).
+Tab order follows the service journey left→right, each tab mapping to a stage and primary actor:
+
+- **Intake → Parts & Photos** = front desk at intake (T&C consent lives here — customer signs the paper form before leaving the unit)
+- **Assessment & Approvals → Repair → Testing** = technician stage (testing is its own tab matching its own status/Jitsi notification; `additional_findings` surfaces here since it arises during testing)
+- **Release** = front desk at pickup (SO, payment, receiver ID, warranty)
+- **Updates & Notifications** = append-only customer comms + the video link
+
+System fields stay off the tabs: `tracking_token`, `settings`, `terms_snapshot`, `waiver_snapshot` are hidden; `work_order_number` and `status` remain top-level above the tabs.
 
 ---
 
