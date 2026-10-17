@@ -81,7 +81,7 @@ Logo lockup: `font-weight 900`, `letter-spacing -1px`, "EASY" in primary green. 
 | `cancelled`, `unclaimed` | destructive (red) | Exception |
 | all others | secondary (neutral) | In-flight |
 
-Journey order for the timeline: `registered → awaiting_assessment → assessing → awaiting_approval → in_repair → testing → ready_for_release → released` (`approved`/`declined` are decision flags on the WO, not timeline stages).
+Journey order for the timeline: `registered → awaiting_assessment → assessing → awaiting_approval → in_repair → testing → ready_for_release → released`. `approved`/`declined` are valid WO statuses but sit outside the linear timeline (they're decision states between `awaiting_approval` and `in_repair`).
 
 ## Usage rules
 

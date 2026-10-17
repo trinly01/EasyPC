@@ -36,7 +36,7 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 
 `check` (exec: did `status` change to a notifiable value?) → `gate` (condition, kept for reference — exec gate does the real work) → `mkupdate` (item-create: update row with milestone + message).
 
-Notifiable statuses: `awaiting_approval`, `ready_for_release`, `released` (+ others in map). `testing` intentionally removed — owned by `easypc_video_link`.
+Notifiable statuses (verified against live op code): `awaiting_approval`, `ready_for_release`, `released`. `testing` intentionally excluded — owned by `easypc_video_link`.
 
 ## `easypc_notify_on_update` — customer email
 

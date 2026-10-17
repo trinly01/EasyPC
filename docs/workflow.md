@@ -47,14 +47,16 @@ Flow caveat on this instance: the `condition` operation fails silently — gatin
 
 Do not email on internal-only changes (`assessing`, `in_repair` progress notes) unless staff explicitly create a `technician_note` update.
 
-## Roles & permissions (suggested)
+## Roles & permissions (implemented)
 
 | Role | Access |
 |------|--------|
 | `easypc_front_desk` (RA-TECH) | Create/edit work orders intake fields, customers, parts checklist, releasing group, files |
 | `easypc_technician` | Edit `assessing` onward: processes, diagnostics, findings, approvals (record), updates |
 | `easypc_manager` | Full + status overrides, `cancelled`/`unclaimed`, T&C version |
-| Customer | No app login — interaction is email-only |
+| Customer | No app login — email updates + the public tracker (`public-tracking.md`) |
+
+Full permission matrix → `roles-and-access.md`.
 
 **Multi-branch (implemented):** `directus_users.easypc_store` assigns each staff user a home branch. `easypc_front_desk` and `easypc_technician` permission filters scope `easypc_work_orders` to `$CURRENT_USER.easypc_store` — children via `work_order.store`, junctions via `easypc_work_orders_id.store` — so each branch only sees its own queue; front-desk creates auto-preset `store` to their branch. `easypc_manager` is unfiltered and sees all branches. Add `store.code` to the WO number format for per-branch sequences.
 
