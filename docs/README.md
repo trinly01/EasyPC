@@ -82,6 +82,7 @@ erDiagram
 - `flows.md` — every `easypc_*` flow: triggers, operation chains, behavior, instance gotchas
 - `roles-and-access.md` — roles, policies, permission matrix, branch scoping, test accounts
 - `public-tracking.md` — customer tracker: API contract, security model, frontend, deployment
+- `design-system.md` — EasyPC branding: color tokens (dark screen theme + light print theme), typography, components, status colors
 
 ## Public tracking page (`tracker/`)
 

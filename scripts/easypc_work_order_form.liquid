@@ -3,37 +3,73 @@
 <head>
 <meta charset="utf-8">
 <style>
-  @page { size: A4; margin: 12mm; }
+  @page { size: A4; margin: 11mm 12mm; }
   * { box-sizing: border-box; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #111; margin: 0; }
-  .hdr { display: table; width: 100%; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
-  .hdr .title { display: table-cell; vertical-align: middle; font-size: 18px; font-weight: bold; }
-  .hdr .meta { display: table-cell; text-align: right; font-size: 11px; }
-  .sec { border: 1px solid #444; margin-bottom: 8px; page-break-inside: avoid; }
-  .sec-h { background: #eee; font-weight: bold; padding: 3px 6px; border-bottom: 1px solid #444; font-size: 11px; }
-  .sec-b { padding: 5px 6px; }
-  table.grid { width: 100%; border-collapse: collapse; }
-  table.grid td, table.grid th { border: 1px solid #999; padding: 3px 5px; vertical-align: top; text-align: left; font-size: 10px; }
-  table.grid th { background: #f5f5f5; }
+  body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; font-size: 10.5px; color: #1a1a1a; margin: 0; }
+
+  /* ---- brand header ---- */
+  .hdr { display: table; width: 100%; border-bottom: 3px solid #00c853; padding-bottom: 8px; margin-bottom: 10px; }
+  .hdr .brand { display: table-cell; vertical-align: bottom; }
+  .hdr .logo { font-size: 26px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+  .hdr .logo .easy { color: #00c853; }
+  .hdr .logo .pc { color: #111; }
+  .hdr .tagline { font-size: 8.5px; letter-spacing: 3.5px; color: #555; margin-top: 2px; }
+  .hdr .doc-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #111; margin-top: 5px; }
+  .hdr .meta { display: table-cell; vertical-align: bottom; text-align: right; font-size: 10px; }
+  .hdr .wo { display: inline-block; border: 1.5px solid #00c853; color: #0a8a3c; font-weight: 800;
+             font-size: 14px; font-family: Consolas, monospace; padding: 3px 10px; border-radius: 4px; margin-bottom: 4px; }
+  .hdr .meta .muted { color: #666; }
+
+  /* ---- sections ---- */
+  .sec { border: 1px solid #d5d5d5; border-radius: 4px; margin-bottom: 8px; page-break-inside: avoid; overflow: hidden; }
+  .sec-h { background: #f0faf3; border-bottom: 1px solid #cdeed8; border-left: 4px solid #00c853;
+           color: #0a7a38; font-weight: 800; font-size: 9.5px; letter-spacing: 1.2px; padding: 4px 8px; }
+  .sec-b { padding: 6px 8px; }
+
+  /* ---- key/value ---- */
   .kv { display: table; width: 100%; }
   .kv .row { display: table-row; }
-  .kv .k, .kv .v { display: table-cell; padding: 2px 4px; }
-  .kv .k { font-weight: bold; width: 160px; }
-  .sig { display: table; width: 100%; margin-top: 24px; }
-  .sig .cell { display: table-cell; width: 33%; text-align: center; padding: 0 12px; }
-  .sig .line { border-top: 1px solid #000; padding-top: 2px; font-size: 10px; }
-  .muted { color: #666; }
+  .kv .k, .kv .v { display: table-cell; padding: 2px 4px; border-bottom: 1px dotted #e5e5e5; }
+  .kv .row:last-child .k, .kv .row:last-child .v { border-bottom: none; }
+  .kv .k { font-weight: 600; width: 160px; color: #444; }
+
+  /* ---- tables ---- */
+  table.grid { width: 100%; border-collapse: collapse; }
+  table.grid td, table.grid th { border: 1px solid #dcdcdc; padding: 3px 6px; vertical-align: top; text-align: left; font-size: 9.5px; }
+  table.grid th { background: #f0faf3; color: #0a7a38; font-weight: 700; font-size: 9px; letter-spacing: 0.4px; }
+
+  /* ---- misc ---- */
+  .muted { color: #777; }
   .right { text-align: right; }
+  .green { color: #0a8a3c; font-weight: 700; }
+  .badge { display: inline-block; border: 1px solid #00c853; color: #0a8a3c; border-radius: 10px;
+           padding: 1px 8px; font-size: 8.5px; font-weight: 700; letter-spacing: 0.6px; }
+  .track { margin-top: 10px; border: 1px dashed #00c853; border-radius: 4px; padding: 6px 8px;
+           font-size: 9px; color: #333; background: #fbfefc; }
+  .track .u { font-family: Consolas, monospace; font-weight: 700; color: #0a8a3c; }
+
+  /* ---- signatures ---- */
+  .sig { display: table; width: 100%; margin-top: 30px; }
+  .sig .cell { display: table-cell; width: 33%; text-align: center; padding: 0 14px; }
+  .sig .line { border-top: 1px solid #333; padding-top: 3px; font-size: 9px; color: #444; }
+  .sig .who { font-size: 8.5px; color: #0a8a3c; font-weight: 700; letter-spacing: 0.6px; }
+  .ftr { margin-top: 14px; padding-top: 6px; border-top: 2px solid #00c853; font-size: 8px;
+         color: #888; display: table; width: 100%; }
+  .ftr .l { display: table-cell; } .ftr .r { display: table-cell; text-align: right; }
 </style>
 </head>
 <body>
 
 <div class="hdr">
-  <div class="title">EasyPC — Service / Work Order</div>
+  <div class="brand">
+    <div class="logo"><span class="easy">EASY</span><span class="pc">PC</span></div>
+    <div class="tagline">TECH IT EASY</div>
+    <div class="doc-title">SERVICE WORK ORDER</div>
+  </div>
   <div class="meta">
-    <div><strong>{{ work_order_number }}</strong></div>
-    <div>Store: {{ store.name }}{% if store.code %} ({{ store.code }}){% endif %}</div>
-    <div>Status: {{ status | upcase }}</div>
+    <div class="wo">{{ work_order_number }}</div>
+    <div>{{ store.name }}{% if store.code %} ({{ store.code }}){% endif %}</div>
+    <div><span class="badge">{{ status | replace: '_', ' ' | upcase }}</span></div>
   </div>
 </div>
 
@@ -41,7 +77,7 @@
   <div class="sec-h">JOB INFORMATION</div>
   <div class="sec-b">
     <div class="kv">
-      <div class="row"><div class="k">Work Order No.</div><div class="v">{{ work_order_number }}</div></div>
+      <div class="row"><div class="k">Work Order No.</div><div class="v green">{{ work_order_number }}</div></div>
       <div class="row"><div class="k">Job Order No.</div><div class="v">{{ job_order_no | default: '—' }}</div></div>
       <div class="row"><div class="k">Odoo Ticket</div><div class="v">{{ odoo_ticket | default: '—' }}</div></div>
       <div class="row"><div class="k">Date / Time In</div><div class="v">{{ date_time_in | date: '%b %d, %Y %I:%M %p' }}</div></div>
@@ -68,7 +104,7 @@
   <div class="sec-h">REQUESTED SERVICES</div>
   <div class="sec-b">
     <table class="grid">
-      <tr><th>Service</th><th style="width:90px">Price (₱)</th></tr>
+      <tr><th>SERVICE</th><th style="width:90px">PRICE (₱)</th></tr>
       {% for s in services %}
       <tr><td>{{ s.easypc_services_id.name }}</td><td class="right">{{ s.charged_price }}</td></tr>
       {% endfor %}
@@ -93,11 +129,11 @@
   <div class="sec-h">UNIT / PARTS INCLUDED</div>
   <div class="sec-b">
     <table class="grid">
-      <tr><th>Item</th><th style="width:60px">Included</th><th>Brand/Model</th><th>Serial No.</th><th>Condition</th></tr>
+      <tr><th>ITEM</th><th style="width:60px">INCLUDED</th><th>BRAND/MODEL</th><th>SERIAL NO.</th><th>CONDITION</th></tr>
       {% for p in parts %}
       <tr>
         <td>{{ p.part_type }}</td>
-        <td>{% if p.provided %}✓{% else %}—{% endif %}</td>
+        <td>{% if p.provided %}<span class="green">✓</span>{% else %}—{% endif %}</td>
         <td>{{ p.brand_model }}</td>
         <td>{{ p.serial_no }}</td>
         <td>{{ p.condition }}{% if p.damage_notes %} — {{ p.damage_notes }}{% endif %}</td>
@@ -111,7 +147,7 @@
   <div class="sec-h">JOB PROCESSES</div>
   <div class="sec-b">
     <table class="grid">
-      <tr><th>Process</th><th>Coverage</th><th>Done By</th><th style="width:110px">Done At</th></tr>
+      <tr><th>PROCESS</th><th>COVERAGE</th><th>DONE BY</th><th style="width:110px">DONE AT</th></tr>
       {% for pr in processes %}
       <tr>
         <td>{{ pr.process_type }}</td>
@@ -128,7 +164,7 @@
   <div class="sec-h">DIAGNOSTIC TESTS</div>
   <div class="sec-b">
     <table class="grid">
-      <tr><th>Area</th><th>Tests</th><th>Issues</th><th>Result</th><th>Tested By</th></tr>
+      <tr><th>AREA</th><th>TESTS</th><th>ISSUES</th><th>RESULT</th><th>TESTED BY</th></tr>
       {% for d in diagnostics %}
       <tr>
         <td>{{ d.area }}</td>
@@ -154,7 +190,7 @@
     </div>
     {% if approvals.size > 0 %}
     <table class="grid" style="margin-top:5px">
-      <tr><th>Approval</th><th>Decision</th><th>Channel</th><th style="width:110px">Decided At</th><th>Notes</th></tr>
+      <tr><th>APPROVAL</th><th>DECISION</th><th>CHANNEL</th><th style="width:110px">DECIDED AT</th><th>NOTES</th></tr>
       {% for a in approvals %}
       <tr><td>{{ a.kind }}</td><td>{{ a.decision | upcase }}</td><td>{{ a.channel }}</td><td>{{ a.decided_at | date: '%b %d, %Y %I:%M %p' }}</td><td>{{ a.notes }}</td></tr>
       {% endfor %}
@@ -168,7 +204,7 @@
   <div class="sec-h">PARTS / MATERIALS USED</div>
   <div class="sec-b">
     <table class="grid">
-      <tr><th>Description</th><th style="width:50px">Qty</th><th style="width:80px">Unit ₱</th><th style="width:80px">Total ₱</th><th>Warranty</th></tr>
+      <tr><th>DESCRIPTION</th><th style="width:50px">QTY</th><th style="width:80px">UNIT ₱</th><th style="width:80px">TOTAL ₱</th><th>WARRANTY</th></tr>
       {% for pu in parts_used %}
       <tr>
         <td>{{ pu.description }}{% if pu.part_type %} ({{ pu.part_type }}){% endif %}{% if pu.source == 'customer_supplied' %} <span class="muted">[customer-supplied]</span>{% endif %}</td>
@@ -187,7 +223,7 @@
   <div class="sec-h">TERMS &amp; WAIVER</div>
   <div class="sec-b">
     <div class="kv">
-      <div class="row"><div class="k">Terms Accepted</div><div class="v">{% if terms_accepted %}YES{% else %}NO{% endif %}{% if terms_accepted_at %} — {{ terms_accepted_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
+      <div class="row"><div class="k">Terms Accepted</div><div class="v">{% if terms_accepted %}<span class="green">YES</span>{% else %}NO{% endif %}{% if terms_accepted_at %} — {{ terms_accepted_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
       {% if terms_version %}<div class="row"><div class="k">Terms Version</div><div class="v">{{ terms_version }}</div></div>{% endif %}
     </div>
     <p class="muted" style="margin:4px 0 0">The customer acknowledges the EasyPC Terms &amp; Conditions and Liability Waiver as printed on the original service form.</p>
@@ -204,16 +240,28 @@
       <div class="row"><div class="k">Released By</div><div class="v">{{ released_by.first_name }} {{ released_by.last_name }}{% if released_at %} — {{ released_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
       <div class="row"><div class="k">Receiver</div><div class="v">{{ receiver_name }}{% if receiver_id %} (ID: {{ receiver_id }}){% endif %}</div></div>
       {% if service_warranty_until %}
-      <div class="row"><div class="k">Service Warranty Until</div><div class="v">{{ service_warranty_until | date: '%b %d, %Y' }}</div></div>
+      <div class="row"><div class="k">Service Warranty Until</div><div class="v green">{{ service_warranty_until | date: '%b %d, %Y' }}</div></div>
       {% endif %}
     </div>
   </div>
 </div>
 
+<div class="track">
+  <strong class="green">TRACK THIS REPAIR ONLINE</strong> &nbsp;—&nbsp; go to
+  <span class="u">trinly01.github.io/EasyPC</span> and enter work order
+  <span class="u">{{ work_order_number }}</span> + your registered mobile number.
+  {% if video_call_link %}Live video with our technician: <span class="u">{{ video_call_link }}</span>{% endif %}
+</div>
+
 <div class="sig">
-  <div class="cell"><div style="height:40px"></div><div class="line">Received By (Signature over printed name)</div></div>
-  <div class="cell"><div style="height:40px"></div><div class="line">Customer Signature</div></div>
-  <div class="cell"><div style="height:40px"></div><div class="line">Released By</div></div>
+  <div class="cell"><div style="height:42px"></div><div class="line"><span class="who">RECEIVED BY</span><br>Signature over printed name / Date</div></div>
+  <div class="cell"><div style="height:42px"></div><div class="line"><span class="who">CUSTOMER</span><br>Signature over printed name / Date</div></div>
+  <div class="cell"><div style="height:42px"></div><div class="line"><span class="who">RELEASED BY</span><br>Signature over printed name / Date</div></div>
+</div>
+
+<div class="ftr">
+  <div class="l"><span class="easy" style="color:#00c853;font-weight:800">EASY</span><span style="font-weight:800">PC</span> — Authorized service centers</div>
+  <div class="r">{{ work_order_number }} · printed {{ "now" | date: '%b %d, %Y %I:%M %p' }}</div>
 </div>
 
 </body>
