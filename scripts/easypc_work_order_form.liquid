@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #111; margin: 0; }
+  .hdr { display: table; width: 100%; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
+  .hdr .title { display: table-cell; vertical-align: middle; font-size: 18px; font-weight: bold; }
+  .hdr .meta { display: table-cell; text-align: right; font-size: 11px; }
+  .sec { border: 1px solid #444; margin-bottom: 8px; page-break-inside: avoid; }
+  .sec-h { background: #eee; font-weight: bold; padding: 3px 6px; border-bottom: 1px solid #444; font-size: 11px; }
+  .sec-b { padding: 5px 6px; }
+  table.grid { width: 100%; border-collapse: collapse; }
+  table.grid td, table.grid th { border: 1px solid #999; padding: 3px 5px; vertical-align: top; text-align: left; font-size: 10px; }
+  table.grid th { background: #f5f5f5; }
+  .kv { display: table; width: 100%; }
+  .kv .row { display: table-row; }
+  .kv .k, .kv .v { display: table-cell; padding: 2px 4px; }
+  .kv .k { font-weight: bold; width: 160px; }
+  .sig { display: table; width: 100%; margin-top: 24px; }
+  .sig .cell { display: table-cell; width: 33%; text-align: center; padding: 0 12px; }
+  .sig .line { border-top: 1px solid #000; padding-top: 2px; font-size: 10px; }
+  .muted { color: #666; }
+  .right { text-align: right; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="title">EasyPC — Service / Work Order</div>
+  <div class="meta">
+    <div><strong>{{ work_order_number }}</strong></div>
+    <div>Store: {{ store.name }}{% if store.code %} ({{ store.code }}){% endif %}</div>
+    <div>Status: {{ status | upcase }}</div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">JOB INFORMATION</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">Work Order No.</div><div class="v">{{ work_order_number }}</div></div>
+      <div class="row"><div class="k">Job Order No.</div><div class="v">{{ job_order_no | default: '—' }}</div></div>
+      <div class="row"><div class="k">Odoo Ticket</div><div class="v">{{ odoo_ticket | default: '—' }}</div></div>
+      <div class="row"><div class="k">Date / Time In</div><div class="v">{{ date_time_in | date: '%b %d, %Y %I:%M %p' }}</div></div>
+      <div class="row"><div class="k">Received By</div><div class="v">{{ received_by.first_name }} {{ received_by.last_name }}</div></div>
+      {% if warranty_claim_of %}
+      <div class="row"><div class="k">Warranty Claim Of</div><div class="v">{{ warranty_claim_of.work_order_number }}</div></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">CUSTOMER INFORMATION</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">Name</div><div class="v">{{ customer.name }}</div></div>
+      <div class="row"><div class="k">Contact No.</div><div class="v">{{ customer.contact_no }}</div></div>
+      <div class="row"><div class="k">Email</div><div class="v">{{ customer.email | default: '—' }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">REQUESTED SERVICES</div>
+  <div class="sec-b">
+    <table class="grid">
+      <tr><th>Service</th><th style="width:90px">Price (₱)</th></tr>
+      {% for s in services %}
+      <tr><td>{{ s.easypc_services_id.name }}</td><td class="right">{{ s.charged_price }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">UNIT DETAILS</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">Unit Type</div><div class="v">{{ unit_type }}</div></div>
+      <div class="row"><div class="k">Brand / Model</div><div class="v">{{ unit_brand_model }}</div></div>
+      <div class="row"><div class="k">Password</div><div class="v">{{ password_handling }}</div></div>
+      <div class="row"><div class="k">Customer Concern</div><div class="v">{{ customer_concern }}</div></div>
+      <div class="row"><div class="k">CPU socket/pins photographed</div><div class="v">{% if cpu_socket_pins_photographed %}YES ({{ photo_count }} photo{% if photo_count > 1 %}s{% endif %}){% else %}NO{% endif %}</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">UNIT / PARTS INCLUDED</div>
+  <div class="sec-b">
+    <table class="grid">
+      <tr><th>Item</th><th style="width:60px">Included</th><th>Brand/Model</th><th>Serial No.</th><th>Condition</th></tr>
+      {% for p in parts %}
+      <tr>
+        <td>{{ p.part_type }}</td>
+        <td>{% if p.provided %}✓{% else %}—{% endif %}</td>
+        <td>{{ p.brand_model }}</td>
+        <td>{{ p.serial_no }}</td>
+        <td>{{ p.condition }}{% if p.damage_notes %} — {{ p.damage_notes }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">JOB PROCESSES</div>
+  <div class="sec-b">
+    <table class="grid">
+      <tr><th>Process</th><th>Coverage</th><th>Done By</th><th style="width:110px">Done At</th></tr>
+      {% for pr in processes %}
+      <tr>
+        <td>{{ pr.process_type }}</td>
+        <td>{{ pr.coverage }}{% if pr.coverage_other %} — {{ pr.coverage_other }}{% endif %}</td>
+        <td>{{ pr.done_by.first_name }} {{ pr.done_by.last_name }}</td>
+        <td>{{ pr.done_at | date: '%b %d, %Y %I:%M %p' }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">DIAGNOSTIC TESTS</div>
+  <div class="sec-b">
+    <table class="grid">
+      <tr><th>Area</th><th>Tests</th><th>Issues</th><th>Result</th><th>Tested By</th></tr>
+      {% for d in diagnostics %}
+      <tr>
+        <td>{{ d.area }}</td>
+        <td>{{ d.tests | join: ', ' }}</td>
+        <td>{{ d.issues }}</td>
+        <td>{{ d.result }}</td>
+        <td>{{ d.tested_by.first_name }} {{ d.tested_by.last_name }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">DIAGNOSIS &amp; RECOMMENDATION</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">Findings</div><div class="v">{{ diagnosis_findings }}</div></div>
+      <div class="row"><div class="k">Recommended Solution</div><div class="v">{{ recommended_solution }}</div></div>
+      <div class="row"><div class="k">Additional Findings</div><div class="v">{{ additional_findings | default: '—' }}</div></div>
+      <div class="row"><div class="k">Assessed By</div><div class="v">{{ assessed_by.first_name }} {{ assessed_by.last_name }}{% if assessed_at %} — {{ assessed_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
+      <div class="row"><div class="k">Test Result</div><div class="v">{{ test_result }}{% if test_remarks %} — {{ test_remarks }}{% endif %}</div></div>
+    </div>
+    {% if approvals.size > 0 %}
+    <table class="grid" style="margin-top:5px">
+      <tr><th>Approval</th><th>Decision</th><th>Channel</th><th style="width:110px">Decided At</th><th>Notes</th></tr>
+      {% for a in approvals %}
+      <tr><td>{{ a.kind }}</td><td>{{ a.decision | upcase }}</td><td>{{ a.channel }}</td><td>{{ a.decided_at | date: '%b %d, %Y %I:%M %p' }}</td><td>{{ a.notes }}</td></tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </div>
+</div>
+
+{% if parts_used.size > 0 %}
+<div class="sec">
+  <div class="sec-h">PARTS / MATERIALS USED</div>
+  <div class="sec-b">
+    <table class="grid">
+      <tr><th>Description</th><th style="width:50px">Qty</th><th style="width:80px">Unit ₱</th><th style="width:80px">Total ₱</th><th>Warranty</th></tr>
+      {% for pu in parts_used %}
+      <tr>
+        <td>{{ pu.description }}{% if pu.part_type %} ({{ pu.part_type }}){% endif %}{% if pu.source == 'customer_supplied' %} <span class="muted">[customer-supplied]</span>{% endif %}</td>
+        <td class="right">{{ pu.qty }}</td>
+        <td class="right">{{ pu.unit_price }}</td>
+        <td class="right">{{ pu.qty | times: pu.unit_price }}</td>
+        <td>{{ pu.warranty_provider }}{% if pu.warranty_days %} — {{ pu.warranty_days }}d{% endif %}{% if pu.warranty_until %} until {{ pu.warranty_until | date: '%b %d, %Y' }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div class="sec">
+  <div class="sec-h">TERMS &amp; WAIVER</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">Terms Accepted</div><div class="v">{% if terms_accepted %}YES{% else %}NO{% endif %}{% if terms_accepted_at %} — {{ terms_accepted_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
+      {% if terms_version %}<div class="row"><div class="k">Terms Version</div><div class="v">{{ terms_version }}</div></div>{% endif %}
+    </div>
+    <p class="muted" style="margin:4px 0 0">The customer acknowledges the EasyPC Terms &amp; Conditions and Liability Waiver as printed on the original service form.</p>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-h">RELEASING</div>
+  <div class="sec-b">
+    <div class="kv">
+      <div class="row"><div class="k">SO Number</div><div class="v">{{ so_number | default: '—' }}</div></div>
+      <div class="row"><div class="k">Amount</div><div class="v">₱ {{ amount | default: 0 }}</div></div>
+      <div class="row"><div class="k">Old Parts Disposition</div><div class="v">{{ old_parts_disposition | default: '—' }}</div></div>
+      <div class="row"><div class="k">Released By</div><div class="v">{{ released_by.first_name }} {{ released_by.last_name }}{% if released_at %} — {{ released_at | date: '%b %d, %Y %I:%M %p' }}{% endif %}</div></div>
+      <div class="row"><div class="k">Receiver</div><div class="v">{{ receiver_name }}{% if receiver_id %} (ID: {{ receiver_id }}){% endif %}</div></div>
+      {% if service_warranty_until %}
+      <div class="row"><div class="k">Service Warranty Until</div><div class="v">{{ service_warranty_until | date: '%b %d, %Y' }}</div></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="sig">
+  <div class="cell"><div style="height:40px"></div><div class="line">Received By (Signature over printed name)</div></div>
+  <div class="cell"><div style="height:40px"></div><div class="line">Customer Signature</div></div>
+  <div class="cell"><div style="height:40px"></div><div class="line">Released By</div></div>
+</div>
+
+</body>
+</html>
