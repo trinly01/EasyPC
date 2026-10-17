@@ -33,13 +33,15 @@ Transitions worth automating (Flows):
 
 Promise on the journey card: email on *meaningful milestones or technician updates*. Implementation:
 
-All flows are prefixed `easypc_` per the naming convention. **Implemented** (scripts/build_flows.py):
+All flows are prefixed `easypc_` per the naming convention — full operation chains in `flows.md`. **Implemented:**
 
 1. **`easypc_notify_on_update`** ✅ — `items.create` on `easypc_work_order_updates` (notify=true) → read customer email → send mail → stamp `notification_sent_at`. *Requires `EMAIL_*` env on the server for mail op.*
-2. **`easypc_status_milestone`** ✅ verified — `items.update` on `easypc_work_orders` where status → notifiable (`testing`, `awaiting_approval`, `ready_for_release`, `released`) → auto-create update row → flow 1 sends.
-3. **`easypc_generate_wo_number`** ✅ verified — `items.create` → assigns `WO-YYYY-NNNN` (count-based sequence).
-4. **`easypc_warranty_stamp`** ✅ verified — status → `released` → `service_warranty_until` = released_at + 30d (adjust per policy).
-5. **`easypc_unclaimed_reminder`** — disabled placeholder; needs per-item iteration design.
+2. **`easypc_status_milestone`** ✅ verified — `items.update` on `easypc_work_orders` where status → notifiable (`awaiting_approval`, `ready_for_release`, `released`) → auto-create update row → flow 1 sends. `testing` is excluded — owned by the video flow.
+3. **`easypc_generate_wo_number`** ✅ verified — `items.create` → assigns `WO-YYYY-NNNN` + `tracking_token` atomically.
+4. **`easypc_warranty_stamp`** ✅ verified — status → `released` → stamps `released_at` + `service_warranty_until` = +30d.
+5. **`easypc_video_link`** ✅ verified — status → `in_repair`/`testing` → generates (once) or reuses the Jitsi room link + posts a `notify_customer` update. Loop-safe; link is stable for the WO's life.
+6. **`easypc_track_lookup`** ✅ verified — webhook endpoint powering the public tracker; see `public-tracking.md`.
+7. **`easypc_unclaimed_reminder`** — disabled placeholder; needs per-item iteration design.
 
 Flow caveat on this instance: the `condition` operation fails silently — gating is done inside `exec` ops via `throw` instead.
 

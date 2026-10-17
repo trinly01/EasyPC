@@ -7,7 +7,7 @@ export default function App() {
     <BrowserRouter basename="/EasyPC">
       <Routes>
         <Route path="/" element={<LookupPage />} />
-        <Route path="/track/:wo/:token" element={<TrackPage />} />
+        <Route path="/track/:wo/:key" element={<TrackPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

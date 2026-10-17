@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button"
 
 export default function LookupPage() {
   const [wo, setWo] = useState("")
-  const [token, setToken] = useState("")
+  const [phone, setPhone] = useState("")
   const navigate = useNavigate()
 
   function submit(e) {
     e.preventDefault()
     const w = wo.trim().toUpperCase()
-    const t = token.trim().toLowerCase()
-    if (w && t) navigate(`/track/${w}/${t}`)
+    const p = phone.replace(/\D/g, "")
+    if (w && p) navigate(`/track/${w}/${p}`)
   }
 
   return (
@@ -27,7 +27,8 @@ export default function LookupPage() {
         <CardHeader>
           <CardTitle>Track your repair</CardTitle>
           <CardDescription>
-            Enter the Work Order number and tracking code printed on your service form.
+            Enter the Work Order number on your service form and the mobile
+            number you registered with us.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -40,9 +41,10 @@ export default function LookupPage() {
             />
             <input
               className="w-full h-11 rounded-md border border-input bg-background px-3 text-sm font-mono placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              placeholder="Tracking code"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
+              placeholder="Mobile number (e.g. 0917 123 4567)"
+              inputMode="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
             <Button type="submit" className="w-full" size="lg">
               Track

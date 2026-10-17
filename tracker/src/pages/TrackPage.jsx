@@ -14,14 +14,14 @@ function fmt(ts) {
 }
 
 export default function TrackPage() {
-  const { wo, token } = useParams()
+  const { wo, key } = useParams()
   const [state, setState] = useState({ loading: true, error: null, data: null })
 
   useEffect(() => {
-    lookupWorkOrder(wo, token)
+    lookupWorkOrder(wo, key)
       .then((data) => setState({ loading: false, error: data ? null : "notfound", data }))
       .catch((e) => setState({ loading: false, error: e.message, data: null }))
-  }, [wo, token])
+  }, [wo, key])
 
   if (state.loading)
     return (
@@ -35,7 +35,8 @@ export default function TrackPage() {
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
         <div className="text-3xl font-black mb-2"><span className="text-primary">EASY</span>PC</div>
         <p className="text-muted-foreground mb-6">
-          We couldn't find that work order. Check the number and tracking code on your service form.
+          We couldn't find that work order. Check the work order number and
+          mobile number you registered with us.
         </p>
         <Link to="/"><Button variant="outline">Back to lookup</Button></Link>
       </div>

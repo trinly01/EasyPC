@@ -1,14 +1,16 @@
 // Public tracking lookup — hits the easypc_track_lookup webhook flow.
-// No auth: the flow validates (wo + token) server-side and returns a
-// sanitized payload only. Direct collection access is denied to public.
+// No auth: the flow validates (wo + key) server-side and returns a
+// sanitized payload only. `key` is the customer's mobile number
+// (full or last 4 digits); the random tracking token still works too.
+// Direct collection access is denied to public.
 const LOOKUP_URL =
   "https://likha-playground.zyberlab.com/flows/trigger/eedd97d4-5c26-4e47-a26f-040806686d70"
 
-export async function lookupWorkOrder(wo, token) {
+export async function lookupWorkOrder(wo, key) {
   const res = await fetch(LOOKUP_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ wo, token }),
+    body: JSON.stringify({ wo, key }),
   })
   if (!res.ok) throw new Error("Lookup failed (" + res.status + ")")
   const data = await res.json()
