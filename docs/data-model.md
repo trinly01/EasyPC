@@ -39,7 +39,7 @@ Select option keys are `snake_case`; display labels follow the paper form's word
 
 ## `easypc_services` (lookup)
 
-Seed rows: `diagnosis`, `recase`, `upgrade`, `cleaning`, `pc_assembly`.
+Seeded with 10 services (₱300–₱1,500) — diagnosis, cleaning, upgrade, recase, PC assembly, OS install, virus removal, data recovery, thermal repaste, screen replacement.
 
 | Field | Type | Interface | Notes |
 |-------|------|-----------|-------|
@@ -158,6 +158,8 @@ Replacement parts the shop sells/installs. Holds the **current** price — the c
 | `updates` | `easypc_work_order_updates.work_order` |
 | `warranty_claims` | `easypc_work_orders.warranty_claim_of` (self O2M) |
 | `print` | Alias — `print` interface bound to `print_template` row `easypc_work_order_form` (`3f63e917-44de-4dbe-ae08-cd58617ba9da`), `fields: ["*.*.*"]`. Renders the LiquidJS service form |
+
+> `print_test` also exists — a leftover manual test field, safe to delete.
 
 ### App layout — groups & tabs
 
@@ -347,6 +349,29 @@ Auto-created as the junction, then extended with transaction fields. This is the
 | `charged_price` | Decimal(10,2) | Copied from `easypc_services.price` when the row is created (Flow or app default); editable per work order for discounts/adjustments; **never synced back** to the lookup |
 
 > The sum of `charged_price` across rows is the expected service total — a Flow can use it to pre-fill `amount` at release, or to flag when `so_number`'s amount differs.
+
+---
+
+## `easypc_settings` — singleton
+
+One-row settings record — centrally managed legal text and shop policy values, referenced by prints, emails, flows, and the tracker instead of hardcoding.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `id` | UUID | PK |
+| `terms_version` | String | e.g. `EPC-TC-2026-01` — snapshot into `work_orders.terms_version` at intake |
+| `terms_conditions` | Text (HTML) | Full T&C — single source for tracker page, emails, reprints |
+| `liability_waiver` | Text (HTML) | Waiver text printed on the service form |
+| `service_warranty_days` | Integer | Labor warranty (30). `easypc_warranty_stamp` currently hardcodes 30 — migrate the flow to read this |
+| `part_warranty_default_days` | Integer | Fallback when a catalog part lacks `warranty_days` (90) |
+| `unclaimed_days` | Integer | Claim window before `unclaimed` (30, T&C clause 6) — for `easypc_unclaimed_reminder` |
+| `tracking_url` | String | Public tracker base URL for printed forms |
+| `video_base_url` | String | `https://meet.jit.si` — swap for self-hosted Jitsi later |
+| `support_email` / `support_phone` | String | Contact details for tracker/emails |
+
+Access: read for all three EasyPC roles; update restricted to `easypc_manager`.
+
+> **Print caveat:** the `print` field only expands the work order (`*.*.*`) — the template can't reach the singleton. That's why `terms_version` is *snapshotted* onto the WO at intake: the printed form shows the version the customer actually agreed to, while the singleton feeds live surfaces (tracker, emails, admin).
 
 ---
 

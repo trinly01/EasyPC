@@ -35,6 +35,7 @@ All scoped collections use the **branch filter** so staff only see their own sto
 | `easypc_work_orders_services` (M2M) | CRUD (branch) | CRUD (branch) | CRUD |
 | `easypc_work_orders_files` (M2M) | CRUD (branch) | CRUD (branch) | CRUD |
 | `easypc_stores` / `easypc_services` / `easypc_parts_catalog` | read | read | CRUD |
+| `easypc_settings` (singleton) | read | read | read + **update** |
 | `directus_users` / `directus_files` / `directus_folders` | read / files RW | read / files RW | read / files RW |
 
 Key points:

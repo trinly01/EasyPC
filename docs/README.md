@@ -32,6 +32,7 @@ Data model for the EasyPC work order system, derived from `EasyPC_Service_Form.d
 | `easypc_work_order_updates` | child (O2M) | Email-update promise | Technician notes / milestones that trigger customer email |
 | `easypc_work_orders_files` | junction (M2M) | §2 photos, signatures | Photos & attachments on a work order, with category |
 | `easypc_work_orders_services` | junction (M2M) | §1 services ticked | Links work orders ↔ services; snapshots `charged_price` per order |
+| `easypc_settings` | singleton | T&C / waiver text | Shop-wide settings: legal text, warranty-day policy, tracking/Jitsi URLs — read by all staff, editable by manager |
 
 Staff references (`received_by`, `assessed_by`, `done_by`, `tested_by`, `released_by`, `recorded_by`) point to `directus_users` — no separate staff collection needed.
 
