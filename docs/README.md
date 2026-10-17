@@ -15,6 +15,30 @@ Data model for the EasyPC work order system, derived from `EasyPC_Service_Form.d
 
 > The **Work Order Number confirms receipt — not diagnosis or repair acceptance.** Email updates notify customers when meaningful work-order milestones or technician updates are recorded.
 
+## Collection organization
+
+Grouped by **change frequency** in the `EasyPC` folder:
+
+```
+EasyPC
+├── easypc_operations          — transactional, touched daily
+│   ├── easypc_work_orders              (1) core record
+│   ├── easypc_customers                (2) new row per new customer
+│   ├── easypc_work_order_updates       (3) milestones/notes
+│   ├── easypc_work_order_parts_used    (4) install/charge lines
+│   ├── easypc_job_processes            (5) work done
+│   ├── easypc_diagnostics              (6) tests
+│   ├── easypc_approvals                (7) decisions
+│   ├── easypc_work_order_parts         (8) intake checklist
+│   ├── easypc_work_orders_services     (9) M2M junction
+│   └── easypc_work_orders_files        (10) M2M junction
+├── easypc_master_data         — lookups, edited occasionally
+│   ├── easypc_services                 (1) prices change
+│   ├── easypc_parts_catalog            (2) SKUs/prices change
+│   └── easypc_stores                   (3) branches rarely change
+└── easypc_settings            — singleton config, rarely touched
+```
+
 ## Collections at a glance
 
 | Collection | Kind | Source on form | Purpose |
