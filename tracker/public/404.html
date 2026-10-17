@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>EasyPC — Redirecting</title>
+    <script>
+      // GitHub Pages SPA fallback: stash the requested path and bounce to index.html
+      var base = '/EasyPC'
+      var p = location.pathname + location.search + location.hash
+      sessionStorage.setItem('easypc-redirect', p)
+      location.replace(base + '/')
+    </script>
+  </head>
+  <body></body>
+</html>

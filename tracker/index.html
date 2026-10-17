@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyPC — Track Your Repair</title>
+    <meta name="description" content="Track your EasyPC service work order status." />
+    <script>
+      // SPA fallback for GitHub Pages: 404.html redirects here with the path in sessionStorage
+      ;(function () {
+        var p = sessionStorage.getItem('easypc-redirect')
+        if (p) {
+          sessionStorage.removeItem('easypc-redirect')
+          history.replaceState(null, '', p)
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

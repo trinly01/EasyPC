@@ -71,3 +71,12 @@ erDiagram
 
 - `data-model.md` — full field-by-field spec for every collection
 - `workflow.md` — status lifecycle ↔ journey mapping, notifications, roles, implementation notes
+
+## Public tracking page (`tracker/`)
+
+Customer-facing repair tracker (LBC/Shopee-style), no account needed.
+
+- **URL:** `https://trinly01.github.io/EasyPC/track/<WO-NUMBER>/<TRACKING_TOKEN>` — token generated per WO by the numbering flow (`tracking_token`, hidden field)
+- **Data path:** POST to the `easypc_track_lookup` webhook flow (`/flows/trigger/eedd97d4-5c26-4e47-a26f-040806686d70`). The flow validates WO+token format, queries via `likha_sql` server-side, returns a PII-safe payload. **No public collection read permissions** — enumeration impossible; token never exposed in any readable field.
+- **Stack:** Vite + React 19 + Tailwind 4 + shadcn-style components; dark theme, EasyPC green. Deploys to GitHub Pages via `.github/workflows/deploy-pages.yml` (enable Pages → source: GitHub Actions).
+- **SPA routing:** `public/404.html` + sessionStorage restore in `index.html` gives clean URLs on Pages.
