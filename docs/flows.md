@@ -14,6 +14,7 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 - `work_order_number` — `WO-2026-0001` style, count-based sequence
 - `tracking_token` — 16-char random alnum, hidden readonly field; still accepted as a lookup key for the public tracker (backward compat for already-printed forms/links)
 - `terms_version` / `terms_snapshot` / `waiver_snapshot` — legal text frozen onto the WO at intake from `easypc_settings`; printed forms always show what the customer actually agreed to, even if settings change later
+- `settings` — M2O link to the singleton row; lets print/email contexts resolve **live** values (`tracking_url`, `support_email`, `video_base_url`) via `{{ settings.* }}`
 
 ## `easypc_video_link` — Jitsi proof-of-work link
 

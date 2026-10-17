@@ -130,6 +130,7 @@ Replacement parts the shop sells/installs. Holds the **current** price — the c
 | `terms_version` | String | Input | Snapshot of which T&C version applied — set by `easypc_generate_wo_number` from `easypc_settings.terms_version` |
 | `terms_snapshot` | Text | Rich text (readonly, hidden) | Full T&C HTML copied from `easypc_settings` at intake — printed on the form; legal record of what was shown |
 | `waiver_snapshot` | Text | Rich text (readonly, hidden) | Liability waiver HTML copied at intake — printed on the form |
+| `settings` | M2O | Select (hidden, readonly) | → `easypc_settings` singleton — **live** reference; resolves `settings.tracking_url`, `settings.support_email`, etc. in print (`*.*.*` expansion) and emails. Legal text uses the snapshot fields above, not this relation — reprints must show what the customer signed |
 
 > Signatures are not stored digitally — the printed paper form remains the signed copy.
 

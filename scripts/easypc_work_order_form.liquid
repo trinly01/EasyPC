@@ -260,9 +260,10 @@
 
 <div class="track">
   <strong class="green">TRACK THIS REPAIR ONLINE</strong> &nbsp;—&nbsp; go to
-  <span class="u">trinly01.github.io/EasyPC</span> and enter work order
+  <span class="u">{{ settings.tracking_url | default: 'trinly01.github.io/EasyPC' }}</span> and enter work order
   <span class="u">{{ work_order_number }}</span> + your registered mobile number.
   {% if video_call_link %}Live video with our technician: <span class="u">{{ video_call_link }}</span>{% endif %}
+  {% if settings.support_email %}<br>Questions? {{ settings.support_email }}{% if settings.support_phone %} · {{ settings.support_phone }}{% endif %}{% endif %}
 </div>
 
 <div class="sig">
