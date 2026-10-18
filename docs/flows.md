@@ -9,12 +9,13 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 | Trigger | `event` → `items.create` on `easypc_work_orders` |
 | ID | `44615a57-1342-406e-947e-653e964809f8` |
 
-`count` (item-read: count WOs) → `format` (exec: build `WO-YYYY-NNNN` + random `tracking_token`) → `getset` (likha_sql: read `easypc_settings`) → `pick` (exec: flatten `getset.rows[0]`) → `setnum` (item-update: writes all fields, `emitEvents: false`).
+`count` (item-read: count WOs) → `format` (exec: build `WO-YYYY-NNNN` + random `tracking_token`) → `getset` (likha_sql: read `easypc_settings`) → `pick` (exec: flatten `getset.rows[0]`) → `setnum` (item-update: writes all fields, `emitEvents: false`) → `genqr` (exec: build qrserver URL for `track/<WO>/<token>`) → `qreq` (request: fetch QR SVG) → `b64` (exec: base64 → `data:image/svg+xml` URI) → `setqr` (item-update: write `tracking_qr`, `emitEvents: false`).
 
 - `work_order_number` — `WO-2026-0001` style, count-based sequence
 - `tracking_token` — 16-char random alnum, hidden readonly field; still accepted as a lookup key for the public tracker (backward compat for already-printed forms/links)
 - `terms_version` / `terms_snapshot` / `waiver_snapshot` — legal text frozen onto the WO at intake from `easypc_settings`; printed forms always show what the customer actually agreed to, even if settings change later
 - `settings` — M2O link to the singleton row; lets print/email contexts resolve **live** values (`tracking_url`, `support_email`, `video_base_url`) via `{{ settings.* }}`
+- `tracking_qr` — QR as `data:image/svg+xml` URI, hidden readonly. Server CSP (`img-src 'self' data: blob:`) blocks external images, so the QR is fetched server-side via a `request` op (exec ops have **no `fetch`** on this build) and inlined as a data URI — the printed form renders it with zero external dependencies
 
 ## `easypc_video_link` — Jitsi proof-of-work link
 
