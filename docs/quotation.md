@@ -1,96 +1,110 @@
-# EasyPC Service Work Order System — Modules & Quotation
+# EasyPC Service Work Order System — Proposal & Quotation
 
 Prepared for: **EasyPC**
-Platform: Directus 11 (self-hosted) + React public tracker
-Status legend: ✅ delivered · 🔧 partial · 📋 proposed
+Platform: **Likha ERP** (Directus 11 core) + React public tracker on GitHub Pages
+Delivery model: Likha hybrid — implementation sprints + Cloud subscription
 
 ---
+
+## Project team
+
+| Role | Headcount | Responsibility on this project |
+|------|-----------|-------------------------------|
+| **Business Analyst** | 1 | Paper-form → data-model mapping, workflow mapping, T&C/legal text, UAT scripts, client sign-off |
+| **Developer** | 1 | Collections, flows, RBAC, print template, tracker app, integrations |
+| **QA** | 1 | Role-permission test matrix, flow verification, security checks (public API), tracker E2E, regression |
+| **Project Manager** | 1 | Schedule, client comms, sprint planning, deployment coordination, acceptance |
 
 ## Module inventory
 
 ### Phase 1 — Core Service Platform (delivered)
 
-| # | Module | What it includes | Status |
-|---|--------|------------------|--------|
-| M1 | **Data model & schema** | 14 `easypc_*` collections mirroring the paper service form — work orders, customers, intake parts checklist, processes, diagnostics, approvals, parts-used lines, updates, junctions for services/files. Snapshot pricing (charged price frozen per transaction). Warranty fields per part + labor warranty. | ✅ |
-| M2 | **Multi-branch RBAC** | 3 roles (front desk / technician / manager), branch-scoped permission filters (`$CURRENT_USER.easypc_store`), append-only customer-update log, print-template read, app access. Test accounts per role. | ✅ |
-| M3 | **Workflow automation (Flows)** | `WO-YYYY-NNNN` numbering + tracking token; status milestone → customer update rows; release stamping (`released_at` + 30-day service warranty); loop-safe wiring. | ✅ |
-| M4 | **Printable service form** | LiquidJS template bound to `print_template`; branded light layout matching the paper form; T&C/waiver text + tracking instructions; print button on the work order. | ✅ |
-| M5 | **Email notifications** | `notify_customer` update → SMTP email via Titan/GoDaddy; `notification_sent_at` stamping; milestone + technician-note messages. | ✅ |
-| M6 | **Live video transparency** | Auto-generated Jitsi room per WO at `in_repair`/`testing`; stable link reused on rework loops; "watch the actual work" customer message; Join button on tracker + printed form. | ✅ |
-| M7 | **Public tracking portal** | Unauthenticated LBC-style tracker: `WO number + mobile (or token)` lookup; webhook flow returns PII-safe payload only (no public collection reads); journey timeline, warranty, video link, services/prices. React 19 + Vite + Tailwind + shadcn-style, GitHub Pages deploy, SPA clean routes. | ✅ |
-| M8 | **Settings & legal versioning** | `easypc_settings` singleton — T&C/waiver text, warranty-day policy, tracking/Jitsi URLs, support contacts; per-WO `terms_snapshot`/`waiver_snapshot`/`terms_version` frozen at intake + live `settings` M2O. | ✅ |
-| M9 | **Seed data & docs** | Realistic stores/services/parts/customers/WOs at every journey stage; full docs set (data model, flows, RBAC, tracking, design system). | ✅ |
+| # | Module | Scope | Status |
+|---|--------|-------|--------|
+| M1 | Data model & schema | 14 `easypc_*` collections mirroring the paper form; snapshot pricing; per-part + labor warranty fields | ✅ |
+| M2 | Multi-branch RBAC | 3 roles, branch-scoped filters, append-only updates log, test accounts | ✅ |
+| M3 | Workflow automation | WO numbering + token, milestone updates, release/warranty stamping, loop-safe flows | ✅ |
+| M4 | Printable service form | LiquidJS template, EasyPC-branded light layout, print interface | ✅ |
+| M5 | Email notifications | `notify_customer` → Titan SMTP, milestone + technician notes | ✅ |
+| M6 | Video transparency | Jitsi room per WO at `in_repair`/`testing`, stable link, customer messaging | ✅ |
+| M7 | Public tracking portal | WO + mobile lookup, PII-safe webhook flow, journey timeline, GitHub Pages | ✅ |
+| M8 | Settings & legal versioning | `easypc_settings` singleton; per-WO T&C/waiver snapshots; live settings M2O | ✅ |
+| M9 | Seed data & documentation | Realistic multi-branch data; 7 doc files | ✅ |
 
 ### Phase 2 — Hardening & rollout (proposed)
 
-| # | Module | Scope | Status |
-|---|--------|-------|--------|
-| M10 | **Production readiness** | `CORS_ORIGIN` for Pages origin; staff password policy; production domain for tracker (e.g. `track.easypc.com.ph`); backup/restore runbook | 🔧 pending |
-| M11 | **QR intake** | Print tracking QR (WO + token deep link) on the service form | 📋 |
-| M12 | **Public-message curation** | `public_message` field on updates so internal notes never leak to the tracker | 📋 |
-| M13 | **Abuse protection** | Rate-limit the lookup webhook; optional last-4→full-phone policy | 📋 |
-| M14 | **Unclaimed reminders** | Scheduled flow: units in `ready_for_release` past `unclaimed_days` → reminder email → auto-flag | 📋 (flow stub exists) |
-| M15 | **Delivery assurance** | `email_status` field (sent/failed), retry on failure; branded HTML email template | 📋 |
-| M16 | **Branded email** | EasyPC design-system HTML email (green header, status card, tracking CTA) | 📋 |
+| # | Module | Scope |
+|---|--------|-------|
+| M10 | Production readiness | CORS origin, production tracker domain, password policy, backup runbook |
+| M11 | QR intake | Tracking QR printed on the service form |
+| M12 | Public-message curation | `public_message` field — internal notes never reach the tracker |
+| M13 | Abuse protection | Rate-limit lookup webhook |
+| M14 | Unclaimed reminders | Scheduled flow: `ready_for_release` past claim window → email + flag |
+| M15 | Delivery assurance | `email_status` sent/failed + retry; stop stamping on failed sends |
+| M16 | Branded email | EasyPC HTML email template (design system) |
 
-### Phase 3 — Integrations (proposed)
+### Phase 3 — Integrations (proposed, needs discovery)
 
-| # | Module | Scope | Status |
-|---|--------|-------|--------|
-| M17 | **Odoo integration** | `odoo_ticket` free-text → live link/sync: SO numbers, parts pricing/inventory, customer dedup | 📋 |
-| M18 | **SMS notifications** | SMS provider (Semaphore/Twilio) alongside email for milestones | 📋 |
-| M19 | **Customer portal v2** | Approval actions from tracking page (approve/decline extra work), photo galleries, PDF download | 📋 |
-
----
-
-## Effort & quotation
-
-Rate basis: **₱15,000 / developer-day** (adjust to your actual rate — totals recompute linearly).
-
-### Phase 1 — delivered scope
-
-| Module | Est. days | Amount |
-|--------|-----------|--------|
-| M1 Data model & schema | 3.0 | ₱45,000 |
-| M2 Multi-branch RBAC | 2.0 | ₱30,000 |
-| M3 Workflow flows | 3.0 | ₱45,000 |
-| M4 Print template & interface | 1.5 | ₱22,500 |
-| M5 Email notifications | 1.0 | ₱15,000 |
-| M6 Video transparency | 1.0 | ₱15,000 |
-| M7 Public tracking portal | 4.0 | ₱60,000 |
-| M8 Settings & legal versioning | 1.0 | ₱15,000 |
-| M9 Seed data & documentation | 1.5 | ₱22,500 |
-| **Phase 1 total** | **18.0** | **₱270,000** |
-
-### Phase 2 — hardening & rollout
-
-| Module | Est. days | Amount |
-|--------|-----------|--------|
-| M10 Production readiness | 1.0 | ₱15,000 |
-| M11 QR intake | 0.5 | ₱7,500 |
-| M12 Public-message curation | 0.5 | ₱7,500 |
-| M13 Abuse protection | 0.5 | ₱7,500 |
-| M14 Unclaimed reminders | 1.0 | ₱15,000 |
-| M15 Delivery assurance | 0.5 | ₱7,500 |
-| M16 Branded email template | 0.5 | ₱7,500 |
-| **Phase 2 total** | **4.5** | **₱67,500** |
-
-### Phase 3 — integrations (indicative, needs discovery)
-
-| Module | Est. days | Amount |
-|--------|-----------|--------|
-| M17 Odoo integration | 5–8 | ₱75,000–120,000 |
-| M18 SMS notifications | 1–2 | ₱15,000–30,000 |
-| M19 Customer portal v2 | 3–5 | ₱45,000–75,000 |
+| # | Module | Scope |
+|---|--------|-------|
+| M17 | Odoo integration | `odoo_ticket` → live link/sync: SO numbers, parts inventory/pricing, customer dedup |
+| M18 | SMS notifications | Semaphore/Twilio alongside email for milestones |
+| M19 | Customer portal v2 | Approve/decline from tracker, photo galleries, PDF download |
 
 ---
+
+## Effort by role — Phase 1 (delivered)
+
+| Role | Rate/day | Days | Amount |
+|------|----------|------|--------|
+| Developer | ₱3,000 | 18 | ₱54,000 |
+| QA | ₱2,500 | 6 | ₱15,000 |
+| Business Analyst | ₱3,000 | 4 | ₱12,000 |
+| Project Manager | ₱3,500 | 3 | ₱10,500 |
+| **Phase 1 subtotal** | | **31 person-days** | **₱91,500** |
+
+*Or packaged as Likha sprints: ~1-month expert engagement (₱40,000) + QA/BA/PM support package (₱51,500) = ₱91,500 — equivalent either way.*
+
+## Phase 2 (proposed)
+
+| Role | Days | Amount |
+|------|------|--------|
+| Developer | 4.5 | ₱13,500 |
+| QA | 1.5 | ₱3,750 |
+| BA | 0.5 | ₱1,500 |
+| PM | 0.5 | ₱1,750 |
+| **Phase 2 subtotal** | **7** | **₱20,500** |
+
+## Phase 3 (indicative — discovery required)
+
+| Module | Est. team-days | Range |
+|--------|----------------|-------|
+| M17 Odoo integration | 8–12 | ₱25,000–40,000 |
+| M18 SMS notifications | 2–3 | ₱7,000–10,000 |
+| M19 Customer portal v2 | 6–9 | ₱20,000–30,000 |
+
+## Recurring — Likha Cloud subscription
+
+| Item | Price | Notes |
+|------|-------|-------|
+| Cloud Standard | ₱6,000/mo | 6 CPU / 12GB / 200GB — sufficient for multi-branch EasyPC |
+| Domain + CMS + email package (optional) | ₱8,000/yr | `track.easypc.com.ph` + managed email accounts |
+| Maintenance retainer (optional) | ₱10,000/mo | Monitoring, minor adjustments, backup verification |
+
+## Commercial summary
+
+| | One-time | Recurring |
+|---|----------|-----------|
+| Phase 1 implementation | ₱91,500 | — |
+| Phase 2 hardening | ₱20,500 | — |
+| Likha Cloud Standard | — | ₱6,000/mo |
+| **Year-1 estimate (P1+P2+12mo cloud)** | | **₱184,000 total** |
 
 ## Terms & assumptions
 
-- **Client provides:** Directus hosting, domain, email account (Titan/GoDaddy), Odoo access for M17, paper-form sign-off on T&C wording.
-- **Not included:** hosting costs, SMS/email provider fees, Jitsi hosting (public meet.jit.si used; self-host optional), on-site training.
-- **Change requests:** priced at the same day rate.
-- **Suggested payment:** 40% mobilization · 40% on Phase 1 UAT sign-off · 20% on go-live.
-- **Warranty:** 30 days bug-fix warranty post go-live; enhancements billed separately.
-- **Maintenance retainer (optional):** ₱10,000/mo — monitoring, minor adjustments, monthly backup verification.
+- Client provides: domain decision, Titan/GoDaddy mailbox, Odoo API access (M17), T&C wording sign-off
+- 90-day initial cloud term per Likha model, then month-to-month; on-prem migration available (one-time local deployment fee + 12-mo stability agreement)
+- Not included: SMS/email provider usage fees, Jitsi self-hosting (public meet.jit.si used)
+- Change requests: role rates above
+- Payment: 40% mobilization · 40% Phase 1 UAT sign-off · 20% go-live
+- Warranty: 30 days bug-fix post go-live
