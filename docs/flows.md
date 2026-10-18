@@ -15,7 +15,7 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 - `tracking_token` — 16-char random alnum, hidden readonly field; still accepted as a lookup key for the public tracker (backward compat for already-printed forms/links)
 - `terms_version` / `terms_snapshot` / `waiver_snapshot` — legal text frozen onto the WO at intake from `easypc_settings`; printed forms always show what the customer actually agreed to, even if settings change later
 - `settings` — M2O link to the singleton row; lets print/email contexts resolve **live** values (`tracking_url`, `support_email`, `video_base_url`) via `{{ settings.* }}`
-- `tracking_qr` — QR as `data:image/svg+xml` URI, hidden readonly. Server CSP (`img-src 'self' data: blob:`) blocks external images, so the QR is fetched server-side via a `request` op (exec ops have **no `fetch`** on this build) and inlined as a data URI — the printed form renders it with zero external dependencies
+- `tracking_qr` — QR as `data:image/svg+xml` URI, hidden readonly. Built because exec ops have **no `fetch`** (uses a `request` op instead) and CSP originally blocked external images. Since CSP now permits `http: https:` images, the print template renders the QR as a direct `api.qrserver.com` URL instead — `tracking_qr` remains a populated fallback; the `genqr → qreq → b64 → setqr` ops can be removed if direct-URL rendering is settled
 
 ## `easypc_video_link` — Jitsi proof-of-work link
 

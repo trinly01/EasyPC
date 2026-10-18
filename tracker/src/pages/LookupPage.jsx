@@ -1,10 +1,11 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export default function LookupPage() {
-  const [wo, setWo] = useState("")
+  const [params] = useSearchParams()
+  const [wo, setWo] = useState(params.get("wo") || "")
   const [phone, setPhone] = useState("")
   const navigate = useNavigate()
 

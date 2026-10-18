@@ -63,7 +63,7 @@ Response (200 always for well-formed input):
 
 - **Stack:** Vite 6 + React 19 + Tailwind 4 + shadcn-style components (`cn`, cva variants — `npx shadcn add` compatible)
 - **Theme:** dark-first, EasyPC vivid green primary, "TECH IT EASY" tagline
-- **Routes:** `/` lookup → `/track/:wo/:key` result
+- **Routes:** `/` lookup → `/track/:wo/:key` result. `?wo=<number>` query param on `/` pre-fills the WO field — used by the printed QR code (`tracking_url/?wo=WO-…`), so scanning lands the customer with only their mobile number left to type
 - **Deploy:** `.github/workflows/deploy-pages.yml` → GitHub Pages on push to `main` touching `tracker/**`. Pages source = "GitHub Actions". `basename="/EasyPC"`.
 - **SPA fallback:** `public/404.html` copies `index.html` with a path-preserving redirect so clean URLs survive refresh.
 

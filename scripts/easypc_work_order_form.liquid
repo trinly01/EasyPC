@@ -262,13 +262,12 @@
 </div>
 
 {% assign track_base = settings.tracking_url | default: 'https://trinly01.github.io/EasyPC' %}
+{% assign qr_data = track_base | append: '/?wo=' | append: work_order_number %}
 <div class="track">
-  {% if tracking_qr contains 'data:image' %}
-  <div class="qr"><img src="{{ tracking_qr }}" alt="QR"></div>
-  {% endif %}
+  <div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=4&data={{ qr_data | url_encode }}" alt="QR"></div>
   <div class="txt">
     <strong class="green">TRACK THIS REPAIR ONLINE</strong><br>
-    {% if tracking_qr contains 'data:image' %}<strong>Scan the QR code</strong> to open your status instantly — no typing needed.<br>{% endif %}
+    <strong>Scan the QR code</strong> — your work order is pre-filled, just enter your registered mobile number.<br>
     Or go to <span class="u">{{ track_base }}</span> and enter work order
     <span class="u">{{ work_order_number }}</span> + your registered mobile number.
     {% if video_call_link %}<br>Live video with our technician: <span class="u">{{ video_call_link }}</span>{% endif %}
