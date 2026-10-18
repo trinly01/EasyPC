@@ -49,7 +49,10 @@
   .badge { display: inline-block; border: 1px solid #00c853; color: #0a8a3c; border-radius: 10px;
            padding: 1px 8px; font-size: 8.5px; font-weight: 700; letter-spacing: 0.6px; }
   .track { margin-top: 10px; border: 1px dashed #00c853; border-radius: 4px; padding: 6px 8px;
-           font-size: 9px; color: #333; background: #fbfefc; }
+           font-size: 9px; color: #333; background: #fbfefc; display: table; width: 100%; }
+  .track .qr { display: table-cell; width: 80px; vertical-align: middle; padding-right: 10px; }
+  .track .qr img { width: 72px; height: 72px; display: block; }
+  .track .txt { display: table-cell; vertical-align: middle; line-height: 1.5; }
   .track .u { font-family: Consolas, monospace; font-weight: 700; color: #0a8a3c; }
 
   /* ---- signatures ---- */
@@ -258,12 +261,20 @@
   </div>
 </div>
 
+{% assign track_base = settings.tracking_url | default: 'https://trinly01.github.io/EasyPC' %}
+{% assign qr_data = track_base | append: '/track/' | append: work_order_number | append: '/' | append: tracking_token %}
 <div class="track">
-  <strong class="green">TRACK THIS REPAIR ONLINE</strong> &nbsp;—&nbsp; go to
-  <span class="u">{{ settings.tracking_url | default: 'trinly01.github.io/EasyPC' }}</span> and enter work order
-  <span class="u">{{ work_order_number }}</span> + your registered mobile number.
-  {% if video_call_link %}Live video with our technician: <span class="u">{{ video_call_link }}</span>{% endif %}
-  {% if settings.support_email %}<br>Questions? {{ settings.support_email }}{% if settings.support_phone %} · {{ settings.support_phone }}{% endif %}{% endif %}
+  {% if tracking_token %}
+  <div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=4&data={{ qr_data | url_encode }}" alt="QR"></div>
+  {% endif %}
+  <div class="txt">
+    <strong class="green">TRACK THIS REPAIR ONLINE</strong><br>
+    {% if tracking_token %}<strong>Scan the QR code</strong> to open your status instantly — no typing needed.<br>{% endif %}
+    Or go to <span class="u">{{ track_base }}</span> and enter work order
+    <span class="u">{{ work_order_number }}</span> + your registered mobile number.
+    {% if video_call_link %}<br>Live video with our technician: <span class="u">{{ video_call_link }}</span>{% endif %}
+    {% if settings.support_email %}<br>Questions? {{ settings.support_email }}{% if settings.support_phone %} · {{ settings.support_phone }}{% endif %}{% endif %}
+  </div>
 </div>
 
 <div class="sig">
