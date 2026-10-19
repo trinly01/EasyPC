@@ -12,6 +12,23 @@ Select option keys are `snake_case`; display labels follow the paper form's word
 
 ---
 
+## `easypc_appointments` — customer-facing bookings (pre-work-order)
+
+| Field | Type | Interface | Notes |
+|---|---|---|---|
+| `appointment_no` | String | Input (readonly) | `APPT-YYYY-NNNN`, assigned by `easypc_appointment_book` |
+| `status` | String | Dropdown | `confirmed`, `arrived`, `cancelled`, `no_show`, `rescheduled` |
+| `store` | M2O | Select | → `easypc_stores` — branch chosen at booking |
+| `customer` | M2O | Select | → `easypc_customers` — find-or-create by `contact_no` at booking |
+| `service` | M2O | Select | → `easypc_services` |
+| `work_order` | M2O | Select | → `easypc_work_orders` — linked by `easypc_appointment_checkin` |
+| `preferred_date` / `preferred_time` | Date / String | | Date + advisory time; capacity enforced per-day |
+| `unit_type` / `concern` | String / Text | | Pre-fills the work order on check-in |
+| `manage_token` | String | Hidden | Public manage key (view/cancel/reschedule) — same pattern as `tracking_token` |
+| `notes` | Text | | |
+
+`easypc_stores` gained booking config: `daily_capacity`, `open_days` (mon–sun array), `open_time`, `close_time`, `max_advance_days` — per-branch, manager-editable.
+
 ## `easypc_customers`
 
 | Field | Type | Interface | Notes |

@@ -17,6 +17,42 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 - `settings` — M2O link to the singleton row; lets print/email contexts resolve **live** values (`tracking_url`, `support_email`, `video_base_url`) via `{{ settings.* }}`
 - `tracking_qr` — QR as `data:image/svg+xml` URI, hidden readonly. Built because exec ops have **no `fetch`** (uses a `request` op instead) and CSP originally blocked external images. Since CSP now permits `http: https:` images, the print template renders the QR as a direct `api.qrserver.com` URL instead — `tracking_qr` remains a populated fallback; the `genqr → qreq → b64 → setqr` ops can be removed if direct-URL rendering is settled
 
+## `easypc_appointment_options` — public booking form feed
+
+| | |
+|---|---|
+| Trigger | `webhook` GET — `/flows/trigger/ed1c258e-54b1-4183-9a3a-492f4d054efc` |
+| ID | `ed1c258e-54b1-4183-9a3a-492f4d054efc` |
+
+`load` (likha_sql: active stores + booking config) → `loadsvc` (likha_sql: services) → `shape` (exec: sanitized {stores, services}). Public, PII-free — feeds the booking form.
+
+## `easypc_appointment_book` — instant-confirm booking
+
+| | |
+|---|---|
+| Trigger | `webhook` POST |
+| ID | `9bf3bc0a-1bb5-4613-be99-1f6dac87eee4` |
+
+`validate` (exec: required fields, mobile `63→0` normalize, email regex, quote-escape for SQL) → `capcheck` (likha_sql: store + booked count for date) → `gate` (exec: open-day / capacity / past / max-advance checks, throws on fail) → `findcust` (likha_sql: find-or-create customer by `contact_no`, CTE INSERT…WHERE NOT EXISTS) → `mknum` (likha_sql: seq + `tracking_url`) → `mktoken` (exec: `APPT-YYYY-NNNN` + `manage_token`) → `create` (item-create) → `confmail` (mail: confirmation with manage link) → `respond` (exec: sanitized confirmation).
+
+## `easypc_appointment_manage` — view / cancel / reschedule
+
+| | |
+|---|---|
+| Trigger | `webhook` POST |
+| ID | `671f175c-b048-4e87-88e9-2563e5a972db` |
+
+`auth` (exec: `APPT-YYYY-NNNN` + mobile suffix normalize + action) → `fetch` (likha_sql: appt + customer phone suffix-match, same pattern as track_lookup) → `capcheck` (likha_sql: capacity for reschedule target date) → `decide` (exec: view→skip, cancel→armed, reschedule→capacity-checked, throws on closed/past/full) → `apply` (likha_sql: armed-guarded UPDATE) → `respond` (exec). Same-day reschedule allowed; verified live (view, wrong-mobile reject, reschedule, cancel).
+
+## `easypc_appointment_checkin` — front-desk WO creation
+
+| | |
+|---|---|
+| Trigger | `manual` — item-level on `easypc_appointments`, confirm prompt |
+| ID | `6374c703-9835-4f1e-a534-46ef8f41306f` |
+
+`pick` (exec: extract selected id) → `load` (likha_sql: appt + customer + service) → `guard` (exec: throw if cancelled/already checked in) → `mkwo` (item-create `easypc_work_orders` — **`emitEvents: true`** so numbering/token/QR flows fire; payload pre-fills customer/store/unit_type/concern) → `linkappt` (item-update: `status=arrived`, `work_order={{mkwo.0}}` — mkwo returns a keys **array**) → `respond`.
+
 ## `easypc_video_link` — Jitsi proof-of-work link
 
 | | |

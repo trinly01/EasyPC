@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams, Link } from "react-router-dom"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
@@ -53,7 +53,10 @@ export default function LookupPage() {
           </form>
         </CardContent>
       </Card>
-      <p className="text-muted-foreground text-xs mt-8">© EasyPC — Authorized service centers</p>
+      <p className="text-muted-foreground text-xs mt-6">
+        Need service? <Link to="/book" className="text-primary underline">Book an appointment</Link>
+      </p>
+      <p className="text-muted-foreground text-xs mt-4">© EasyPC — Authorized service centers</p>
     </div>
   )
 }
