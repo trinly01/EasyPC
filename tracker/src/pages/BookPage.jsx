@@ -54,6 +54,8 @@ export default function BookPage() {
     setError("")
     try {
       const res = await bookAppointment(form)
+      if (!res || !res.appointment_no)
+        throw new Error("That slot can't be booked — it may be full or the branch closed. Pick another.")
       setDone(res)
     } catch (err) {
       setError(err.message === "Request failed (500)" ? "That slot can't be booked — try another date." : err.message)

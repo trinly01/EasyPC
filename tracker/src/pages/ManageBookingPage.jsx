@@ -33,7 +33,10 @@ export default function ManageBookingPage() {
     setNote("")
     try {
       const res = await manageAppointment(ref, mobile, action, extra)
-      if (!res.found) {
+      if (!res || (!res.found && !res.error)) {
+        setError("Action failed — the slot may be full, in the past, or the branch closed.")
+        setBooking(null)
+      } else if (!res.found) {
         setError("No booking found for that reference + mobile number.")
         setBooking(null)
       } else if (res.error) {
