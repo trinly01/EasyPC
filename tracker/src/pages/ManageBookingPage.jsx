@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { manageAppointment } from "@/lib/api"
+import SlotPicker from "@/components/SlotPicker"
 
 const inputCls =
   "w-full h-11 rounded-md border border-input bg-background px-3 text-sm font-mono placeholder:font-sans placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -104,11 +105,13 @@ export default function ManageBookingPage() {
           {resched && (
             <div className="space-y-2 rounded-md border border-border p-3">
               <label className={labelCls}>New date</label>
-              <input type="date" className={inputCls} value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+              <input type="date" className={inputCls} value={newDate}
+                onChange={(e) => { setNewDate(e.target.value); setNewTime("") }} />
               <label className={labelCls}>New time</label>
-              <input type="time" className={inputCls} value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+              <SlotPicker store={booking?.store_id} date={newDate}
+                value={newTime} onChange={setNewTime} />
               <div className="flex gap-2">
-                <Button className="flex-1" disabled={busy || !newDate}
+                <Button className="flex-1" disabled={busy || !newDate || !newTime}
                   onClick={() => call("reschedule", { new_date: newDate, new_time: newTime })}>
                   {busy ? "Saving…" : "Confirm new slot"}
                 </Button>

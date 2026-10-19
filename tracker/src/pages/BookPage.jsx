@@ -3,6 +3,8 @@ import { Link } from "react-router-dom"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getBookingOptions, bookAppointment } from "@/lib/api"
+import SlotPicker from "@/components/SlotPicker"
+import SearchableSelect from "@/components/SearchableSelect"
 
 const inputCls =
   "w-full h-11 rounded-md border border-input bg-background px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -40,7 +42,11 @@ export default function BookPage() {
       ? !store.open_days.includes(DAY_KEYS[new Date(form.preferred_date + "T00:00:00").getDay()])
       : false
 
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
+  const set = (k) => (e) => {
+    const next = { ...form, [k]: e.target.value }
+    if (k === "store" || k === "preferred_date") next.preferred_time = ""
+    setForm(next)
+  }
 
   async function submit(e) {
     e.preventDefault()
@@ -106,14 +112,15 @@ export default function BookPage() {
           <form onSubmit={submit} className="space-y-3">
             <div>
               <label className={labelCls}>Branch</label>
-              <select className={inputCls} value={form.store} onChange={set("store")} required>
-                <option value="">Select branch</option>
-                {options?.stores?.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.open_time}–{s.close_time})
-                  </option>
-                ))}
-              </select>
+              <SearchableSelect
+                placeholder="Search branches…"
+                value={form.store}
+                onChange={(id) => setForm({ ...form, store: id, preferred_time: "" })}
+                items={(options?.stores || []).map((s) => ({
+                  id: s.id, label: s.name,
+                  sub: `${s.code} · ${s.open_time}–${s.close_time}`,
+                }))}
+              />
             </div>
             <div>
               <label className={labelCls}>Service</label>
@@ -124,20 +131,19 @@ export default function BookPage() {
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelCls}>Preferred date</label>
-                <input type="date" className={inputCls} min={today} max={maxDate}
-                  value={form.preferred_date} onChange={set("preferred_date")} required />
-                {dayClosed && (
-                  <p className="text-xs text-destructive mt-1">Branch is closed that day</p>
-                )}
-              </div>
-              <div>
-                <label className={labelCls}>Preferred time</label>
-                <input type="time" className={inputCls}
-                  value={form.preferred_time} onChange={set("preferred_time")} />
-              </div>
+            <div>
+              <label className={labelCls}>Preferred date</label>
+              <input type="date" className={inputCls} min={today} max={maxDate}
+                value={form.preferred_date} onChange={set("preferred_date")} required />
+              {dayClosed && (
+                <p className="text-xs text-destructive mt-1">Branch is closed that day</p>
+              )}
+            </div>
+            <div>
+              <label className={labelCls}>Preferred time</label>
+              <SlotPicker store={form.store} date={form.preferred_date}
+                value={form.preferred_time}
+                onChange={(t) => setForm({ ...form, preferred_time: t })} />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -170,7 +176,8 @@ export default function BookPage() {
                 value={form.concern} onChange={set("concern")} />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" size="lg" disabled={busy || dayClosed}>
+            <Button type="submit" className="w-full" size="lg"
+              disabled={busy || dayClosed || !form.preferred_time}>
               {busy ? "Booking…" : "Confirm booking"}
             </Button>
           </form>

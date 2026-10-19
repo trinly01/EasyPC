@@ -27,7 +27,7 @@ Select option keys are `snake_case`; display labels follow the paper form's word
 | `manage_token` | String | Hidden | Public manage key (view/cancel/reschedule) — same pattern as `tracking_token` |
 | `notes` | Text | | |
 
-`easypc_stores` gained booking config: `daily_capacity`, `open_days` (mon–sun array), `open_time`, `close_time`, `max_advance_days` — per-branch, manager-editable.
+`easypc_stores` gained booking config: `daily_capacity`, `open_days` (mon–sun array), `open_time`, `close_time`, `max_advance_days`, `slot_minutes` (slot duration, default 60), `slot_capacity` (bookings per slot, default 2) — per-branch, manager-editable. `preferred_time` stores the slot label (`"2:00 PM"`) — it must match the label `easypc_appointment_slots` generates.
 
 ## `easypc_customers`
 

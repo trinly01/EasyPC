@@ -26,6 +26,17 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 
 `load` (likha_sql: active stores + booking config) → `loadsvc` (likha_sql: services) → `shape` (exec: sanitized {stores, services}). Public, PII-free — feeds the booking form.
 
+## `easypc_appointment_slots` — Calendly-style slot feed
+
+| | |
+|---|---|
+| Trigger | `webhook` GET — `/flows/trigger/dfc7c15a-ccaf-47f2-ba7d-bfafd4728e0f?store=<uuid>&date=YYYY-MM-DD` |
+| ID | `dfc7c15a-ccaf-47f2-ba7d-bfafd4728e0f` |
+
+`load` (likha_sql: store slot config) → `counts` (likha_sql: confirmed bookings grouped by `preferred_time` for the date) → `respond` (exec: generates slots from `open_time`→`close_time` stepping `slot_minutes`; each slot `{time, remaining, available}`; disables past slots on same-day in Asia/Manila time; returns `{closed: true}` on closed weekdays).
+
+**Gotcha:** `likha_sql` returns `rows: null` for multi-statement SQL — one statement per op. `{{$trigger.query.x}}` interpolates fine in `sql`.
+
 ## `easypc_appointment_book` — instant-confirm booking
 
 | | |
@@ -33,7 +44,7 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 | Trigger | `webhook` POST |
 | ID | `9bf3bc0a-1bb5-4613-be99-1f6dac87eee4` |
 
-`validate` (exec: required fields, mobile `63→0` normalize, email regex, quote-escape for SQL) → `capcheck` (likha_sql: store + booked count for date) → `gate` (exec: open-day / capacity / past / max-advance checks, throws on fail) → `findcust` (likha_sql: find-or-create customer by `contact_no`, CTE INSERT…WHERE NOT EXISTS) → `mknum` (likha_sql: seq + `tracking_url`) → `mktoken` (exec: `APPT-YYYY-NNNN` + `manage_token`) → `create` (item-create) → `confmail` (mail: confirmation with manage link) → `respond` (exec: sanitized confirmation).
+`validate` (exec: required fields incl. `preferred_time` `h:mm AM/PM`, mobile `63→0` normalize, email regex, quote-escape) → `capcheck` (likha_sql: store config + booked count for the **date and the slot**) → `gate` (exec: open-day / daily-capacity / **slot_capacity** / past / same-day-past-slot (Asia/Manila) / max-advance checks) → `findcust` (likha_sql: find-or-create by `contact_no`) → `mknum` → `mktoken` → `create` (item-create) → `confmail` → `respond`.
 
 ## `easypc_appointment_manage` — view / cancel / reschedule
 
@@ -42,7 +53,7 @@ All EasyPC flows are prefixed `easypc_`. Flows run with `accountability: all` un
 | Trigger | `webhook` POST |
 | ID | `671f175c-b048-4e87-88e9-2563e5a972db` |
 
-`auth` (exec: `APPT-YYYY-NNNN` + mobile suffix normalize + action) → `fetch` (likha_sql: appt + customer phone suffix-match, same pattern as track_lookup) → `capcheck` (likha_sql: capacity for reschedule target date) → `decide` (exec: view→skip, cancel→armed, reschedule→capacity-checked, throws on closed/past/full) → `apply` (likha_sql: armed-guarded UPDATE) → `respond` (exec). Same-day reschedule allowed; verified live (view, wrong-mobile reject, reschedule, cancel).
+`auth` (exec: `APPT-YYYY-NNNN` + mobile suffix normalize + action; reschedule requires `new_date` + `new_time` slot label) → `fetch` (likha_sql: appt + customer phone suffix-match) → `capcheck` (likha_sql: day + **slot** capacity for the reschedule target, excluding the appointment itself) → `decide` (exec: view→skip, cancel→armed, reschedule→slot-checked) → `apply` (likha_sql: armed-guarded UPDATE incl. `preferred_time`) → `respond` (exec: `booking` incl. `status` + `store_id` for the frontend slot grid).
 
 ## `easypc_appointment_checkin` — front-desk WO creation
 

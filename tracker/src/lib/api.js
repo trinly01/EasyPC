@@ -11,6 +11,8 @@ const APPT_BOOK_URL =
   "https://likha-playground.zyberlab.com/flows/trigger/9bf3bc0a-1bb5-4613-be99-1f6dac87eee4"
 const APPT_MANAGE_URL =
   "https://likha-playground.zyberlab.com/flows/trigger/671f175c-b048-4e87-88e9-2563e5a972db"
+const APPT_SLOTS_URL =
+  "https://likha-playground.zyberlab.com/flows/trigger/dfc7c15a-ccaf-47f2-ba7d-bfafd4728e0f"
 
 async function post(url, body) {
   const res = await fetch(url, {
@@ -32,6 +34,14 @@ export async function lookupWorkOrder(wo, key) {
 export async function getBookingOptions() {
   const res = await fetch(APPT_OPTIONS_URL)
   if (!res.ok) throw new Error("Failed to load booking options")
+  return res.json()
+}
+
+export async function getSlots(store, date) {
+  const res = await fetch(
+    `${APPT_SLOTS_URL}?store=${encodeURIComponent(store)}&date=${encodeURIComponent(date)}`
+  )
+  if (!res.ok) throw new Error("Failed to load time slots")
   return res.json()
 }
 
