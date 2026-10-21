@@ -31,7 +31,8 @@ EasyPC
 │   ├── easypc_approvals                (7) decisions
 │   ├── easypc_work_order_parts         (8) intake checklist
 │   ├── easypc_work_orders_services     (9) M2M junction
-│   └── easypc_work_orders_files        (10) M2M junction
+│   ├── easypc_work_orders_files        (10) M2M junction
+│   └── easypc_appointments             (11) pre-WO bookings
 ├── easypc_master_data         — lookups, edited occasionally
 │   ├── easypc_services                 (1) prices change
 │   ├── easypc_parts_catalog            (2) SKUs/prices change
@@ -56,6 +57,7 @@ EasyPC
 | `easypc_work_order_updates` | child (O2M) | Email-update promise | Technician notes / milestones that trigger customer email |
 | `easypc_work_orders_files` | junction (M2M) | §2 photos, signatures | Photos & attachments on a work order, with category |
 | `easypc_work_orders_services` | junction (M2M) | §1 services ticked | Links work orders ↔ services; snapshots `charged_price` per order |
+| `easypc_appointments` | entity | Online booking form | Pre-work-order bookings: slot pick, instant confirm, manage/check-in via public flows |
 | `easypc_settings` | singleton | T&C / waiver text | Shop-wide settings: legal text, warranty-day policy, tracking/Jitsi URLs — read by all staff, editable by manager |
 
 Staff references (`received_by`, `assessed_by`, `done_by`, `tested_by`, `released_by`, `recorded_by`) point to `directus_users` — no separate staff collection needed.
@@ -109,6 +111,8 @@ erDiagram
 - `roles-and-access.md` — roles, policies, permission matrix, branch scoping, test accounts
 - `public-tracking.md` — customer tracker: API contract, security model, frontend, deployment
 - `design-system.md` — EasyPC branding: color tokens (dark screen theme + light print theme), typography, components, status colors
+- `dashboard.md` — Insights dashboard: metric panels, echarts-panel ↔ `easypc_chart_*` flow pattern, demo seed data
+- `quotation.md` — project proposal & quotation (2-month engagement)
 
 ## Public tracking page (`tracker/`)
 

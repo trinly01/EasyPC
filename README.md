@@ -30,6 +30,8 @@ export DIRECTUS_TOKEN=<admin-token>
 python scripts/build_schema.py      # collections, fields, relations
 python scripts/build_flows.py       # milestone / notify / warranty / numbering flows
 python scripts/seed_data.py         # realistic stores, services, parts, customers, WOs
+python scripts/seed_dashboard_data.py # 6 months of demo WOs/appointments for Insights
+python scripts/build_dashboard.py   # EasyPC Dashboard: metric + echarts panels, chart flows
 python scripts/add_tracking_token.py
 python scripts/build_track_lookup.py
 python scripts/add_phone_lookup.py  # phone-based public lookup
@@ -40,6 +42,7 @@ python scripts/fix_warranty_flow.py
 
 ## Quick links
 
+- Insights dashboard: `EasyPC Dashboard` (id `9267580f-5909-4377-9774-e59bd341c2f4`) — see `docs/dashboard.md`
 - Public tracker endpoint: `POST /flows/trigger/eedd97d4-5c26-4e47-a26f-040806686d70` — `{wo, key}` where `key` = customer mobile (full or last-4) or `tracking_token`
 - Print template: `print_template` → `easypc_work_order_form`
 - GitHub Pages: repo Settings → Pages → source **GitHub Actions**

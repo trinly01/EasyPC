@@ -133,6 +133,10 @@ Design note only; needs per-item iteration to email customers whose units sit in
 
 Webhook + `likha_sql` op that repaired M2M junction metadata (`junction_field`, `ON DELETE CASCADE`, `files` special) after the relation-config UI crashed on this build. Kept disabled for reference — it's the pattern for DB-level fixes the REST API can't express.
 
+## `easypc_chart_*` — dashboard chart feeds (webhook, `accountability: all`)
+
+Six flows (`easypc_chart_intake_trend`, `easypc_chart_revenue`, `easypc_chart_status`, `easypc_chart_top_services`, `easypc_chart_branch`, `easypc_chart_parts`) backing the `EasyPC Dashboard` echarts panels. Same shape each: `likha_sql` (key `sql_1`) → `exec` (key `chart`) returning an echarts option object; `options.error_on_reject: true`. Built by `scripts/build_dashboard.py` — full SQL/panel spec in `docs/dashboard.md`.
+
 ## Gotchas learned on this instance
 
 - **`condition` ops fail silently** — use `throw` inside `exec` ops to gate.
@@ -142,3 +146,6 @@ Webhook + `likha_sql` op that repaired M2M junction metadata (`junction_field`, 
 - **Postgres timestamps serialize as `{}`** through flow responses — `::text` cast in SQL.
 - **Shell quoting:** never inline `python -c` with `$trigger`/`$last`/`{{...}}` in double quotes — bash eats them. Write a script file (all `scripts/*.py` follow this).
 - **Cloudflare blocks the default Python UA** — always send `User-Agent: curl/8.5.0`.
+- **Webhook flows fire via `GET /flows/trigger/{id}`** — POST is 403 even for admin (verified on `bis_chart_*`/`easypc_chart_*`).
+- **`exec` results can't contain functions** — structured-clone 500 (`could not be cloned`); echarts formatters must be string templates.
+- **Flow side effects are async** — `items.create` flows stamp fields (WO number, tracking token) after the POST responds; re-fetch before asserting.
