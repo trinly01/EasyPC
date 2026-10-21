@@ -180,6 +180,7 @@ def ensure_panel(dash_id, name, ptype, x, y, w, h, options):
                   f'&filter%5Bname%5D%5B_eq%5D={urllib.parse.quote(name, safe="")}&limit=1')
     existing = (res.get('data') or [None])[0]
     body = {'dashboard': dash_id, 'name': name, 'type': ptype, 'icon': None,
+            'show_header': True,
             'position_x': x, 'position_y': y, 'width': w, 'height': h, 'options': options}
     if existing:
         api('PATCH', f"/panels/{existing['id']}", body)

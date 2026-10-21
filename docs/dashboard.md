@@ -4,7 +4,7 @@ Directus Insights dashboard **`EasyPC Dashboard`** (id `9267580f-5909-4377-9774-
 
 ## Layout
 
-Top row: 6 `metric` panels (w=8, h=9, x=1,10,19,28,37,46). Below: 6 `echarts-panel` panels in a 2×3 grid (w=27, h=22; x=1/29, y=11/33/55).
+Top row: 6 `metric` panels (w=8, h=9, x=1,10,19,28,37,46). Below: 6 `echarts-panel` panels in a 2×3 grid (w=27, h=22; x=1/29, y=11/33/55). All panels set `show_header: true` — the `name` renders as the panel title bar (defaults to false on API-created panels; charts also embed an echarts `title`, matching BIS).
 
 ## Metrics
 
